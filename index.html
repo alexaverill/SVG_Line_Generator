@@ -5,82 +5,153 @@
     <meta charset="utf-8" />
     <title>SVG Line Generator</title>
     <script type="text/javascript">
-    class Point{
-        constructor(_x,_y){
-            this.x = _x;
-            this.y = _y;
+
+        class Point {
+            constructor(_x, _y) {
+                this.x = _x;
+                this.y = _y;
+            }
         }
-    }
-    let canvas;
-    let controlPoints = [];
-    let start = new Point(0,50);
-    let end = new Point(200,50);
-    let c1 = new Point(10,25);
-    let c2 = new Point(180,25);
-    let activePoint = null;
-    let mouseDown = false;
-        function initialize(){
+        let canvas;
+        let controlPoints = [];
+        let linePoints = [];
+
+        let activePoint = null;
+        let mouseDown = false;
+        let fudgeFactor = 20;
+        //------------------------ Tests ----------------------------- //
+        //Lazy implementation of testing to avoid adding another framework. 
+        //lets me run tests from inspector. 
+        function RunAllTests() {
+            Test_AddLineSegment();
+            Test_FindNearestPoint();
+        }
+        function Test_AddLineSegment() {
+            //assert preconditions
+            linePoints = [];
+            console.assert(linePoints.length == 0, { error: "Control points is not starting at 0" });
+            AddLineSegment();
+            console.assert(linePoints.length == 1, { error: "Not the expected number of line points" });
+
+            console.log("Add Line Segements Passed");
+            linePoints=[];
+        }
+        function Test_FindNearestPoint(){
+            let p1 = new Point(10,10)
+            linePoints.push(p1);
+            controlPoints.push(new Point(150,150));
+            //test true equivelence
+            findNearestPoint(10,10);
+            console.log(activePoint.x);
+            console.assert(activePoint ===p1, {error:"Point was not found when exactly equal!"} );
+            console.log("Equal boundary Tested");
+            //test positive click
+            activePoint = null;
+            findNearestPoint(10+fudgeFactor,10+fudgeFactor);
+            console.assert(activePoint === p1, {error:"Point was not found on a positive outer bounds"});
+            console.log("positive outer bounds tested");
+            //test negative click
+            activePoint = null;
+            findNearestPoint(10-fudgeFactor,10-fudgeFactor);
+            console.assert(activePoint === p1, {error:"Point was not found on a negative outer bounds"});
+            console.log("Negative outer bounds tested");
+            //test positive outer.
+            activePoint = null;
+            findNearestPoint(11+fudgeFactor, 11+fudgeFactor);
+            console.assert(activePoint !== p1,{error:"Point was found when it shouldn't have!"});
+            console.log("Error case pased");
+            //test negative outer case
+            activePoint = null;
+            findNearestPoint(10-fudgeFactor-1,10-fudgeFactor-1);
+            console.assert(activePoint !== p1, {error:"Point was not found on a positive outer bounds"});
+            console.log("negative outside bounds tested");
+            console.log("Find Nearest Point Tests Passed");
+
+        }
+        //-------------------------------------------------------------//
+        function initialize() {
             canvas = document.getElementById("canvas");
-            canvas.addEventListener('mousedown',(e)=>{
-                handleMouseClick(canvas,e);
+            canvas.addEventListener('mousedown', (e) => {
+                handleMouseClick(canvas, e);
             });
-            canvas.addEventListener('mouseup',(e)=>{
+            canvas.addEventListener('mouseup', (e) => {
                 mouseDown = false;
             });
-            canvas.addEventListener('mousemove',(e)=>{
-                handleMouseDrag(canvas,e);
+            canvas.addEventListener('mousemove', (e) => {
+                handleMouseDrag(canvas, e);
             });
+            //populate points.
+            linePoints.push(new Point(0, 50));
+            linePoints.push(new Point(200, 50));
+            controlPoints.push(new Point(10,25));
+            controlPoints.push(new Point(100,25));
             draw();
         }
-        function findActivePoint(x,y){
+        function AddLineSegment() {
+            linePoints.push(new Point(0, 0));
+        }
+        function findNearestPoint(x, y) {
             //eventually iterate over a list of active points and return the closest.
-            let points = [c1,c2]
+            //TODO: test with mouse to see if overlapping points are a pain.
+            let points = controlPoints.concat(linePoints);
             let fudgeFactor = 20;
-            for(let i = 0; i<points.length; i++){
-                if(points[i].x > x-fudgeFactor 
-                && points[i].x < x+fudgeFactor 
-                && points[i].y > y-fudgeFactor
-                && points[i].y < y+fudgeFactor){
-                    console.log("point is "+i);
+            for (let i = 0; i < points.length; i++) {
+                if (points[i].x >= x - fudgeFactor
+                    && points[i].x <= x + fudgeFactor
+                    && points[i].y >= y - fudgeFactor
+                    && points[i].y <= y + fudgeFactor) {
+                    console.log("point is (" + points[i].x+","+points[i].y+")");
                     activePoint = points[i];
                     return;
                 }
             }
-            
+
         }
-        function handleMouseDrag(canvas, event){
+        function handleMouseDrag(canvas, event) {
             //console.log("DRAG "+event.clientX+" "+event.clientY);
-            if(mouseDown && activePoint !=null){
+            if (mouseDown && activePoint != null) {
                 //update active point;
                 activePoint.x = event.clientX;
                 activePoint.y = event.clientY;
                 draw();
             }
         }
-        function handleMouseClick(canvas, event){
+        function handleMouseClick(canvas, event) {
             mouseDown = !mouseDown
-            findActivePoint(event.clientX,event.clientY);
-            console.log(event.clientX +" "+ event.clientY);
+            findNearestPoint(event.clientX, event.clientY);
+            console.log(event.clientX + " " + event.clientY);
         }
-        function DrawPointHighlight(ctx, position,width, color){
+        function DrawPointHighlight(ctx, position, width, color) {
             ctx.moveTo(position.x, position.y);
             ctx.fillStyle = color;
-            let xPos = position.x - width/2;
-            let yPos = position.y - width/2;
-            ctx.fillRect(xPos,yPos,width, width);
+            let xPos = position.x - width / 2;
+            let yPos = position.y - width / 2;
+            ctx.fillRect(xPos, yPos, width, width);
 
         }
         function draw() {
-            
+
             const ctx = canvas.getContext('2d');
             ctx.beginPath();
-            ctx.clearRect(0, 0, 200, 200);
-            //ctx.beginBath();
-            DrawPointHighlight(ctx,c1,5, 'rgb(200,0,0)');
-            DrawPointHighlight(ctx,c2,5,'rgb(200,0,0)');
+            ctx.clearRect(0, 0, 500, 500);
+            for(let i=0; i<controlPoints.length; i++){
+                DrawPointHighlight(ctx, controlPoints[i], 5, 'rgb(200,0,0)');
+            }
             ctx.fillStyle = 'rgb(255,255,255)';
-            ctx.moveTo(start.x,start.y);
-            ctx.bezierCurveTo(c1.x,c1.y,c2.x,c2.y,end.x,end.y);
+            console.log("Number of Beziers: "+linePoints.length/2);
+            let numberOfBeziers = linePoints.length/2;
+            for(let i=0; i<=numberOfBeziers;i++){
+                //draw a handle for visualization. 
+                DrawPointHighlight(ctx,linePoints[i],5,'rgb(0,0,255)');
+                if(i <= 1){
+                    ctx.moveTo(linePoints[i].x,linePoints[i].y);
+                }else{
+                    ctx.moveTo(linePoints[i-1].y,linePoints[i-1].y);
+                }
+                if(i < linePoints.length-1){
+                ctx.bezierCurveTo(controlPoints[i].x, controlPoints[i].y,controlPoints[i+1].x,controlPoints[i+1].y,linePoints[i+1].x,linePoints[i+1].y);
+                }
+            }
             ctx.stroke();
         }
     </script>
@@ -88,7 +159,8 @@
 </head>
 
 <body onload="initialize();">
-    <canvas id="canvas" width="200px" height="200px"></canvas>
+    <canvas id="canvas" width="500px" height="500px"></canvas>
+    <button onClick="addSegment()">Add Line Segment</button>
 </body>
 <script>
 
