@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>SVG Line Generator</title>
+    <script type="text/javascript">
+    class Point{
+        constructor(_x,_y){
+            this.x = _x;
+            this.y = _y;
+        }
+    }
+    let canvas;
+    let controlPoints = [];
+    let start = new Point(0,50);
+    let end = new Point(200,50);
+    let c1 = new Point(10,25);
+    let c2 = new Point(180,25);
+    let activePoint = null;
+    let mouseDown = false;
+        function initialize(){
+            canvas = document.getElementById("canvas");
+            canvas.addEventListener('mousedown',(e)=>{
+                handleMouseClick(canvas,e);
+            });
+            canvas.addEventListener('mouseup',(e)=>{
+                mouseDown = false;
+            });
+            canvas.addEventListener('mousemove',(e)=>{
+                handleMouseDrag(canvas,e);
+            });
+            draw();
+        }
+        function findActivePoint(x,y){
+            //eventually iterate over a list of active points and return the closest.
+            let points = [c1,c2]
+            let fudgeFactor = 20;
+            for(let i = 0; i<points.length; i++){
+                if(points[i].x > x-fudgeFactor 
+                && points[i].x < x+fudgeFactor 
+                && points[i].y > y-fudgeFactor
+                && points[i].y < y+fudgeFactor){
+                    console.log("point is "+i);
+                    activePoint = points[i];
+                    return;
+                }
+            }
+            
+        }
+        function handleMouseDrag(canvas, event){
+            //console.log("DRAG "+event.clientX+" "+event.clientY);
+            if(mouseDown && activePoint !=null){
+                //update active point;
+                activePoint.x = event.clientX;
+                activePoint.y = event.clientY;
+                draw();
+            }
+        }
+        function handleMouseClick(canvas, event){
+            mouseDown = !mouseDown
+            findActivePoint(event.clientX,event.clientY);
+            console.log(event.clientX +" "+ event.clientY);
+        }
+        function DrawPointHighlight(ctx, position,width, color){
+            ctx.moveTo(position.x, position.y);
+            ctx.fillStyle = color;
+            let xPos = position.x - width/2;
+            let yPos = position.y - width/2;
+            ctx.fillRect(xPos,yPos,width, width);
+
+        }
+        function draw() {
+            
+            const ctx = canvas.getContext('2d');
+            ctx.beginPath();
+            ctx.clearRect(0, 0, 200, 200);
+            //ctx.beginBath();
+            DrawPointHighlight(ctx,c1,5, 'rgb(200,0,0)');
+            DrawPointHighlight(ctx,c2,5,'rgb(200,0,0)');
+            ctx.fillStyle = 'rgb(255,255,255)';
+            ctx.moveTo(start.x,start.y);
+            ctx.bezierCurveTo(c1.x,c1.y,c2.x,c2.y,end.x,end.y);
+            ctx.stroke();
+        }
+    </script>
+
+</head>
+
+<body onload="initialize();">
+    <canvas id="canvas" width="200px" height="200px"></canvas>
+</body>
+<script>
+
+
+</script>
+
+</html>
