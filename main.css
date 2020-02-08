@@ -4,7 +4,7 @@ body{
 .root {
     display: grid;
     grid-template-columns: 20% 20% 6% 1% 20% auto;
-    grid-template-rows: 15% 3% 10% 20% auto;
+    grid-template-rows: 15% 5% 10% 20% auto;
     width: 100vw;
     height: 100vh;
 }
@@ -15,6 +15,11 @@ hr {
     border-top: 1px solid #ccc;
     /* margin: 1em 0; */
     padding: 0;
+}
+.ActionButton{
+    display:inline-block;
+    height: 3em;
+    font-weight: bold;
 }
 #canvasArea {
     background-color: rgb(184, 226, 253);
