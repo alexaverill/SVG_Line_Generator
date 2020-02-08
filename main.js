@@ -101,6 +101,8 @@ function init(){
 function Reset(){
     linePoints = [];
     controlPoints = [];
+    let svgContainer = document.getElementById("svgPathOut");
+    svgContainer.innerHTML="";
     init();
 }
 function AddLineSegment() {
@@ -114,7 +116,7 @@ function AddLineSegment() {
 function GeneratePath(){
     let svgContainer = document.getElementById("svgPathOut");
     let path = serialize(linePoints,controlPoints);
-    svgContainer.innerText = path;
+    svgContainer.innerHTML = path;
 }
 function findNearestPoint(x, y) {
     //eventually iterate over a list of active points and return the closest.

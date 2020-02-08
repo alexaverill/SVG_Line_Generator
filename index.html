@@ -11,6 +11,7 @@
 
 <body onload="initialize();">
     <div class="root">
+        <h1 id="MainTitle"> SVG Bezier Path Generator</h1>
         <div class="canvasContainer">
             <canvas id="canvasArea" width="500px" height="500px"></canvas>
         </div>
@@ -20,9 +21,11 @@
             <button class="ActionButton" onClick="Reset()">Reset</button>
         </div>
         <div class="svgOutput">
-            <div class="title"><h3>SVG Path:</h3></div>
-            <hr/>
-            <div id="svgPathOut"></div>
+            <div class="title"><h3>SVG Path:</h3><hr/></div>
+            
+            <div id="svgPathOut">
+
+            </div>
         </div>
     </div>
 </body>
