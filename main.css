@@ -1,0 +1,68 @@
+body{
+    background-color: rgb(34, 150, 90);
+}
+.root {
+    display: grid;
+    grid-template-columns: 20% 20% 6% 1% 20% auto;
+    grid-template-rows: 15% 3% 10% 20% auto;
+    width: 100vw;
+    height: 100vh;
+}
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #ccc;
+    /* margin: 1em 0; */
+    padding: 0;
+}
+#canvasArea {
+    background-color: rgb(184, 226, 253);
+    border-radius: 2%;
+    /*width:100%;
+    height:100%;*/
+}
+
+.canvasContainer {
+    color: red;
+    grid-column: 2/4;
+    grid-row: 3/5;
+}
+
+.menu {
+    color: blue;
+    grid-column: 2/4;
+    grid-row: 2/3;
+}
+
+.svgOutput {
+    width: 100%;
+    height: 100%;
+    background-color: rgb(56, 68, 201);
+    grid-column: 5/6;
+    grid-row: 4/5;
+    border-radius: 2%;
+    display:grid;
+    grid-template-rows: 20% 80%;
+    grid-template-columns: 100%;
+}
+#svgPathOut{
+    grid-row:2/3;
+    grid-column: 1/2;
+    padding: 5%;
+    color:white;
+}
+.title{
+    grid-row: 1/2;
+    grid-column: 1/2;
+    padding-left: 5%;
+    
+}
+
+.title > h3{
+    color:white;
+}
+.svgOutput > hr{
+    width: 95%;
+    margin-left: 2.5%;
+}
