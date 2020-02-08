@@ -1,5 +1,12 @@
+@font-face{
+    font-family: 'FiraSans';
+    src: local('FiraSans-Regular'),
+        url('FiraSans-Regular.woff');
+}
+
 body{
     background-color: rgb(34, 150, 90);
+    font-family: FiraSans;
 }
 .root {
     display: grid;
@@ -20,6 +27,7 @@ hr {
     display:inline-block;
     height: 3em;
     font-weight: bold;
+    font-family: FiraSans;
 }
 #canvasArea {
     background-color: rgb(184, 226, 253);

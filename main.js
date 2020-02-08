@@ -87,12 +87,21 @@ function initialize() {
     canvas.addEventListener('mousemove', (e) => {
         handleMouseDrag(canvas, e);
     });
-    //populate points.
+    init();
+    
+    
+}
+function init(){
     linePoints.push(new Point(10, 50));
     linePoints.push(new Point(canvasWidth/2, canvasHeight/2));
     controlPoints.push(new Point(10, 25));
     controlPoints.push(new Point(100, 25));
     draw();
+}
+function Reset(){
+    linePoints = [];
+    controlPoints = [];
+    init();
 }
 function AddLineSegment() {
     let lastPointPos = linePoints.length-1;
