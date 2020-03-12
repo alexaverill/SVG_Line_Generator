@@ -196,8 +196,8 @@ function draw() {
     for (let i = 0; i < linePoints.length; i++) {
         //draw a handle for visualization. 
         
-        DrawHintLine(ctx, linePoints[i],controlPoints[i],5,'rgb(73,181,10)');
-        DrawPointHighlight(ctx, linePoints[i], 7, 'rgb(30,10,181)');
+        DrawHintLine(ctx, linePoints[i],controlPoints[i],5,'rgba(73,181,10,.75)');
+        DrawPointHighlight(ctx, linePoints[i], 7, 'rgba(30,10,181,.5)');
         if (i < linePoints.length - 1) {
             ctx.beginPath();
             ctx.lineWidth=2;
@@ -210,7 +210,7 @@ function draw() {
     //keeps highlights above the hint lines.
     //i.e it looks pertier
     for (let i = 0; i < controlPoints.length; i++) {
-        DrawPointHighlight(ctx, controlPoints[i], 7, 'rgb(181,19,10)');
+        DrawPointHighlight(ctx, controlPoints[i], 7, 'rgba(181,19,10,.5)');
     }
     
 }
